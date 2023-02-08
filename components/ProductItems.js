@@ -1,6 +1,9 @@
 import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import BouncyCheckbox from "react-native-bouncy-checkbox";
+import { Divider } from "react-native-elements";
+import { useDispatch } from "react-redux";
+import ViewCart from "./products/ViewCart";
 
 const ProductsItems = ({ navigation }) => {
 
@@ -18,43 +21,60 @@ const ProductsItems = ({ navigation }) => {
         fetchData();
     }, []);
 
+    const dispatch = useDispatch();
+
+    const selectItem = (item, checkboxValue) =>
+        dispatch({
+            type: "ADD_TO_CART",
+            payload: {
+                ...item,
+                productName: item.title,
+                checkboxValue: checkboxValue,
+            },
+        });
+
     const renderItem = ({ item }) => {
         return (
-            <View style={{ marginVertical: 16 }}>
-                <TouchableOpacity
-                    activeOpacity={0.6}
-                    onPress={() => navigation.navigate('Product',
-                        {
-                            title: item.title,
-                            description: item.description,
-                            image: item.thumbnail,
-                            price: item.price,
-                            rating: item.rating,
-                            brand: item.brand,
-                            reviews: item.stock,
-                            images: item.images,
-                            discount: item.discountPercentage
-                        })}
-                >
-                    <Image source={{ uri: item.thumbnail }} style={styles.image} />
-                    <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <View>
-                            <Text style={styles.title}>{item.title}</Text>
-                            {item.description.length > 2 ?
-                                <Text style={styles.description}>{item.description.slice(0, 37) + '\n' + item.description.slice(38, 50)}</Text>
+            <View>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', margin: 20 }}>
+                    <BouncyCheckbox
+                        iconStyle={{ borderColor: 'lightgray' }}
+                        fillColor="black"
+                        onPress={(checkboxValue) => selectItem(item, checkboxValue)} />
+
+                    <View>
+                        <TouchableOpacity
+
+                            onPress={() => navigation.navigate('Product',
+                                {
+                                    title: item.title,
+                                    description: item.description,
+                                    image: item.thumbnail,
+                                    price: item.price,
+                                    rating: item.rating,
+                                    brand: item.brand,
+                                    reviews: item.stock,
+                                    images: item.images,
+                                    discount: item.discountPercentage
+                                })}
+                        >
+                            {item.title.length > 25 ?
+                                <Text style={styles.title}>{item.title.slice(0, 20) + '\n' + '...'}</Text>
+                                : <Text style={styles.title}>{item.title.slice(0, 20)}</Text>
+                            }
+                            {item.description.length > 30 ?
+                                <Text style={styles.description}>{item.description.slice(0, 30) + '\n' + '...'}</Text>
                                 : <Text style={styles.description}>{item.description.slice(0, 30) + '...'}</Text>
                             }
-                        </View>
+                            <Text>${item.price}.00</Text>
+                        </TouchableOpacity>
 
-                        <View style={{ alignItems: 'center' }}>
-                            <Text style={styles.price}>${item.price}.00</Text>
-                            <View style={styles.ratingContainer}>
-                                <Text style={styles.rating}>{item.rating}</Text>
-                                <AntDesign size={20} name="star" color={'white'} />
-                            </View>
-                        </View>
                     </View>
-                </TouchableOpacity>
+                    <View>
+                        <Image source={{ uri: item.thumbnail }} style={styles.image} />
+                    </View>
+                </View>
+                <Divider width={0.5} orientation="vertical" />
             </View >
         );
     };
@@ -62,11 +82,14 @@ const ProductsItems = ({ navigation }) => {
         <View style={styles.container}>
             {data && (
                 <FlatList
+                    showsVerticalScrollIndicator={false}
                     data={data.products}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id.toString()}
                 />
             )}
+            <ViewCart navigation={navigation} />
+
         </View>
     )
 }
@@ -78,23 +101,19 @@ const styles = StyleSheet.create({
         backgroundColor: '#eee',
     },
     title: {
-        fontSize: 14,
-        fontWeight: 'bold',
-        marginVertical: 4,
-        color: 'grey'
+        fontSize: 15,
+        fontWeight: '600',
+
     },
     image: {
-        height: 320,
-        width: '100%',
-        borderRadius: 16
-    },
-    price: {
-        fontSize: 19,
-        fontWeight: 'bold',
+        height: 110,
+        width: 110,
+        borderRadius: 7
     },
     description: {
         fontSize: 12,
-        marginTop: 8
+        // marginTop: 8,
+        color: 'grey'
     },
     ratingContainer: {
         width: 70,

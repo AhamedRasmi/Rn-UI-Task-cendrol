@@ -5,6 +5,7 @@ import SearchBar from '../components/SearchBar';
 import Categories from '../components/Categories';
 import { useState } from 'react';
 
+
 export default function HomeScreen({ navigation }) {
 
     const [activeTab, setActiveTab] = useState("Dashboard");
@@ -16,10 +17,8 @@ export default function HomeScreen({ navigation }) {
                 <HeaderTab activeTab={activeTab} setActiveTab={setActiveTab} />
                 <SearchBar cityHandler={setCity} />
             </View>
-            <ScrollView showsVerticalScrollIndicator={false}>
-                <Categories />
-                <ProductsItems navigation={navigation} />
-            </ScrollView>
+            <Categories />
+            <ProductsItems navigation={navigation} />
         </View >
     );
 }
