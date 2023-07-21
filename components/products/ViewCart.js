@@ -6,10 +6,11 @@ const ViewCart = ({ navigation }) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const { items, productName } = useSelector(
+    const { items, productName, selectedItemName } = useSelector(
         (state) => state.cartReducer.selectedItems
     );
 
+    console.log(items['selectedItems'], 'ITEMMM')
     const total = items
         .map((item) => Number(item.price))
         .reduce((prev, curr) => prev + curr, 0);
@@ -19,6 +20,7 @@ const ViewCart = ({ navigation }) => {
         currency: "USD",
     });
 
+    console.log(totalUSD, 'UDSSSD')
     const checkoutModalContent = () => {
         return (
             <>
@@ -43,7 +45,6 @@ const ViewCart = ({ navigation }) => {
                                 onPress={() => {
                                     () => { navigation.navigate('') }
                                     setModalVisible(false);
-
                                 }}
                             >
                                 <Text style={{ color: "white", fontSize: 20 }}>Checkout</Text>

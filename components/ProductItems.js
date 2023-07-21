@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from "react-native"
 import BouncyCheckbox from "react-native-bouncy-checkbox";
 import { Divider } from "react-native-elements";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import ViewCart from "./products/ViewCart";
 
 const ProductsItems = ({ navigation }) => {
@@ -33,6 +33,13 @@ const ProductsItems = ({ navigation }) => {
             },
         });
 
+    const cartItems = useSelector(
+        (state) => state.cartReducer.selectedItems.items
+    );
+    // const isProductIncart = (item, cartItems) => (
+    //     Boolean(cartItems.find((item) => item.title === item.title))
+    // )
+
     const renderItem = ({ item }) => {
         return (
             <View>
@@ -40,11 +47,11 @@ const ProductsItems = ({ navigation }) => {
                     <BouncyCheckbox
                         iconStyle={{ borderColor: 'lightgray' }}
                         fillColor="black"
+                        // isChecked={isProductIncart(item, cartItems)}
                         onPress={(checkboxValue) => selectItem(item, checkboxValue)} />
 
                     <View>
                         <TouchableOpacity
-
                             onPress={() => navigation.navigate('Product',
                                 {
                                     title: item.title,
